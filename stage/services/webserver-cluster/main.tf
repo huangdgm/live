@@ -2,6 +2,15 @@ provider "aws" {
 	region = "us-east-2"
 }
 
+terraform {
+	# Only the 'key' parameter remains in the Terraform code, since you still need to set a different 'key' value for each module.
+	# All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
+	backend "s3" {
+		# Terraform will create the key path automatically
+		key = "stage/services/webserver-cluster/terraform.tfstate"
+	}
+}
+
 data "aws_vpc" "default" {
 	# Direct Terraform to lookup the default VPC in your AWS account
 	default = true
