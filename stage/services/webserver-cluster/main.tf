@@ -20,6 +20,16 @@ data "aws_subnet_ids" "default" {
 	vpc_id = data.aws_vpc.default.id
 }
 
+data "terraform_remote_state" "db" {
+	backend = "s3"
+
+	config {
+		bucket = "terraform3-up-and-running"
+		key = "stage/data-storage/mysql/terraform.tfstate"
+		region = "us-east-2"
+	}
+}
+
 resource "aws_launch_configuration" "example" {
 	image_id			= "ami-07a0844029df33d7d"
 	instance_type		= "t2.micro"
