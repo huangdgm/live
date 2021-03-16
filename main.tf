@@ -5,6 +5,7 @@ provider "aws" {
 terraform {
 	backend "s3" {
 		bucket = "terraform3-up-and-running"
+		# Terraform will create the key path automatically
 		key = "global/s3/terraform.tfstate"
 		region = "us-east-2"
 
