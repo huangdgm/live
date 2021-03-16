@@ -3,14 +3,11 @@ provider "aws" {
 }
 
 terraform {
+	# Only the 'key' parameter remains in the Terraform code, since you still need to set a different 'key' value for each module.
+	# All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
 	backend "s3" {
-		bucket = "terraform3-up-and-running"
 		# Terraform will create the key path automatically
 		key = "global/s3/terraform.tfstate"
-		region = "us-east-2"
-
-		dynamodb_table = "terraform-up-and-running-locks"
-		encrypt = true
 	}
 }
 
