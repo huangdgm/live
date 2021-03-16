@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "us-east-2"
+}
+
 terraform {
   # Only the 'key' parameter remains in the Terraform code, since you still need to set a different 'key' value for each module.
   # All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
