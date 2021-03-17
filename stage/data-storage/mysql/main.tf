@@ -11,9 +11,10 @@ terraform {
   }
 }
 
-data "aws_secretsmanager_secret_version" "db_password" {
-  secret_id = "mysql-master-password-stage"
-}
+//
+//data "aws_secretsmanager_secret_version" "db_password" {
+//  secret_id = "mysql-master-password-stage"
+//}
 
 resource "aws_db_instance" "example" {
   instance_class = "db.t2.micro"
