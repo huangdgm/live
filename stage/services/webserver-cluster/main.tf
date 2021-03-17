@@ -1,5 +1,5 @@
 provider "aws" {
-	region = "us-east-2"
+	region = var.region
 }
 
 terraform {
@@ -27,9 +27,9 @@ data "terraform_remote_state" "db" {
 	backend = "s3"
 
 	config = {
-		bucket = "terraform3-up-and-running"
+		bucket = var.bucket
 		key = "stage/data-storage/mysql/terraform.tfstate"
-		region = "us-east-2"
+		region = var.region
 	}
 }
 
@@ -37,9 +37,9 @@ data "terraform_remote_state" "webserver-cluster" {
 	backend = "s3"
 
 	config = {
-		bucket = "terraform3-up-and-running"
+		bucket = var.bucket
 		key = "stage/services/webserver-cluster/terraform.tfstate"
-		region = "us-east-2"
+		region = var.region
 	}
 }
 

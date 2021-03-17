@@ -9,3 +9,14 @@ variable "alb_listener_port" {
 	type = number
 	default = 80
 }
+
+variable "region" {
+	type = string
+	default = "us-east-2"
+}
+
+variable "bucket" {
+	description = "The S3 bucket to be used for storing state files"
+	type = string
+	default = "terraform3-up-and-running"
+}
