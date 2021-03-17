@@ -35,7 +35,7 @@ data "terraform_remote_state" "db" {
 data "terraform_remote_state" "webserver-cluster" {
 	backend = "s3"
 
-	config {
+	config = {
 		bucket = "terraform3-up-and-running"
 		key = "stage/services/webserver-cluster/terraform.tfstate"
 		region = "us-east-2"
