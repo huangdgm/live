@@ -20,6 +20,8 @@ data "aws_subnet_ids" "default" {
 	vpc_id = data.aws_vpc.default.id
 }
 
+# You can use this data source to fetch the Terraform state file stored by another set of Terraform configurations in a completely read-only manner.
+# The way to fetch the data from terraform_remote_state is through 'outputs'.
 data "terraform_remote_state" "db" {
 	backend = "s3"
 
@@ -30,25 +32,35 @@ data "terraform_remote_state" "db" {
 	}
 }
 
+data "terraform_remote_state" "webserver-cluster" {
+	backend = "s3"
+
+	config {
+		bucket = "terraform3-up-and-running"
+		key = "stage/services/webserver-cluster/terraform.tfstate"
+		region = "us-east-2"
+	}
+}
+
+# Externalize the user data file.
+data "template_file" "user-data" {
+	template = file("user-data.sh")
+
+	// Another way to define variables.
+	// These are dedicated for the usage by 'user-data.sh'.
+	vars = {
+		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
+		alb_listener_port	= var.alb_listener_port // To reference another variable prefixed with 'var'.
+		db_address	= data.terraform_remote_state.db.outputs.address
+		db_port		= data.terraform_remote_state.db.outputs.port
+	}
+}
+
 resource "aws_launch_configuration" "example" {
 	image_id			= "ami-07a0844029df33d7d"
 	instance_type		= "t2.micro"
 	security_groups		= [aws_security_group.instance.id]
-
-	user_data = <<-EOF
-		    #!/bin/bash
-		    sudo yum update -y
-			sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-		    sudo yum install -y httpd mariadb-server
-		    sudo systemctl start httpd
-		    sudo systemctl enable httpd
-		    sudo usermod -a -G apache ec2-user
-		    sudo chown -R ec2-user:apache /var/www
-		    sudo chmod -R 777 /var/www
-		    sudo find /var/www -type d -exec chmod 2775 {} \;
-		    sudo find /var/www -type f -exec chmod 0664 {} \;
-		    sudo echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
-		    EOF
+	user_data 			= data.template_file.user-data.rendered
 
 	lifecycle {
 		create_before_destroy = true
@@ -75,6 +87,7 @@ resource "aws_autoscaling_group" "example" {
 resource "aws_security_group" "instance" {
 	name = "terraform-example-instance"
 
+	# Allow inbound HTTP requests
 	ingress {
 		from_port = var.server_port
 		to_port = var.server_port
@@ -82,6 +95,27 @@ resource "aws_security_group" "instance" {
 		cidr_blocks = ["0.0.0.0/0"]
 	}
 
+	# Allow all outbound requests
+	egress {
+		from_port = 0
+		to_port = 0
+		protocol = "-1"
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+}
+
+resource "aws_security_group" "alb" {
+	name = "terraform-example-alb"
+
+	# Allow inbound HTTP requests
+	ingress {
+		from_port = var.alb_listener_port
+		to_port = var.alb_listener_port
+		protocol = "tcp"
+		cidr_blocks = ["0.0.0.0/0"]
+	}
+
+	# Allow all outbound requests
 	egress {
 		from_port = 0
 		to_port = 0
@@ -99,7 +133,7 @@ resource "aws_lb" "example" {
 
 resource "aws_lb_listener" "http" {
 	load_balancer_arn = aws_lb.example.arn
-	port = 80
+	port = var.alb_listener_port
 	protocol = "HTTP"
 
 	# By default, return a simple 404 page
@@ -114,29 +148,9 @@ resource "aws_lb_listener" "http" {
 	}
 }
 
-resource "aws_security_group" "alb" {
-	name = "terraform-example-alb"
-
-	# Allow inbound HTTP requests
-	ingress {
-		from_port = 80
-		protocol = "tcp"
-		to_port = 80
-		cidr_blocks = ["0.0.0.0/0"]
-	}
-
-	# Allow all outbound requests
-	egress {
-		from_port = 0
-		protocol = "-1"
-		to_port = 0
-		cidr_blocks = ["0.0.0.0/0"]
-	}
-}
-
 resource "aws_lb_target_group" "asg" {
 	name = "terraform-asg-example"
-	port = var.server_port
+	port = var.alb_listener_port
 	protocol = "HTTP"
 	vpc_id = data.aws_vpc.default.id
 
