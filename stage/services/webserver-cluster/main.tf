@@ -37,7 +37,7 @@ data "terraform_remote_state" "webserver-cluster" {
 
 	config = {
 		bucket = "terraform3-up-and-running"
-		key = "stage/services/webserver-cluster/terraform.tfstate"
+		key = "stage/data-storage/mysql/terraform.tfstate"
 		region = "us-east-2"
 	}
 }
@@ -49,7 +49,7 @@ data "template_file" "user-data" {
 	// Another way to define variables.
 	// These are dedicated for the usage by 'user-data.sh'.
 	vars = {
-		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
+		alb_dns_name = data.terraform_remote_state.db.outputs.address
 		alb_listener_port	= var.alb_listener_port // To reference another variable prefixed with 'var'.
 		db_address	= data.terraform_remote_state.db.outputs.address
 		db_port		= data.terraform_remote_state.db.outputs.port
