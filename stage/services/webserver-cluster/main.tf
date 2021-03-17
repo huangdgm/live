@@ -6,7 +6,8 @@ terraform {
 	# Only the 'key' parameter remains in the Terraform code, since you still need to set a different 'key' value for each module.
 	# All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
 	backend "s3" {
-		# Terraform will create the key path automatically
+		# Terraform will create the key path automatically.
+		# Variables aren't allowed in a backend configuration.
 		key = "stage/services/webserver-cluster/terraform.tfstate"
 	}
 }
@@ -37,7 +38,7 @@ data "terraform_remote_state" "webserver-cluster" {
 
 	config = {
 		bucket = "terraform3-up-and-running"
-		key = "stage/data-storage/mysql/terraform.tfstate"
+		key = "stage/services/webserver-cluster/terraform.tfstate"
 		region = "us-east-2"
 	}
 }
@@ -49,7 +50,7 @@ data "template_file" "user-data" {
 	// Another way to define variables.
 	// These are dedicated for the usage by 'user-data.sh'.
 	vars = {
-		alb_dns_name = data.terraform_remote_state.db.outputs.address
+		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
 		alb_listener_port	= var.alb_listener_port // To reference another variable prefixed with 'var'.
 		db_address	= data.terraform_remote_state.db.outputs.address
 		db_port		= data.terraform_remote_state.db.outputs.port
