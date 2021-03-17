@@ -26,5 +26,5 @@ resource "aws_db_instance" "example" {
 
   # Use a Terraform data source to read the secrets from a secret store
   # password = data.aws_secretsmanager_secret_version.db_password.secret_string
-  password = "admin"
+  password = "administrator"
 }
