@@ -32,15 +32,15 @@ data "terraform_remote_state" "db" {
 	}
 }
 
-data "terraform_remote_state" "webserver-cluster" {
-	backend = "s3"
-
-	config = {
-		bucket = "terraform3-up-and-running"
-		key = "stage/services/webserver-cluster/terraform.tfstate"
-		region = "us-east-2"
-	}
-}
+//data "terraform_remote_state" "webserver-cluster" {
+//	backend = "s3"
+//
+//	config = {
+//		bucket = "terraform3-up-and-running"
+//		key = "stage/services/webserver-cluster/terraform.tfstate"
+//		region = "us-east-2"
+//	}
+//}
 
 # Externalize the user data file.
 data "template_file" "user-data" {
@@ -49,7 +49,7 @@ data "template_file" "user-data" {
 	// Another way to define variables.
 	// These are dedicated for the usage by 'user-data.sh'.
 	vars = {
-		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
+		//alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
 		alb_listener_port	= var.alb_listener_port // To reference another variable prefixed with 'var'.
 		db_address	= data.terraform_remote_state.db.outputs.address
 		db_port		= data.terraform_remote_state.db.outputs.port
