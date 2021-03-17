@@ -7,6 +7,7 @@ terraform {
 	# All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
 	backend "s3" {
 		# Terraform will create the key path automatically
+		# When run 'terraform apply' for the first time, the terraform will create a new state file under the 'key' path.
 		key = "global/s3/terraform.tfstate"
 	}
 }
@@ -35,6 +36,7 @@ resource "aws_dynamodb_table" "terraform-locks" {
 	hash_key = "LockID"
 	name = "terraform-up-and-running-locks"
 	billing_mode = "PAY_PER_REQUEST"
+
 	attribute {
 		name = "LockID"
 		type = "S"

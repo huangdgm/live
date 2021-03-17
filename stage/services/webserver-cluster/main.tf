@@ -12,11 +12,13 @@ terraform {
 	}
 }
 
+# Under the hood, the information provided by data source is fetched by calling AWS API.
 data "aws_vpc" "default" {
 	# Direct Terraform to lookup the default VPC in your AWS account
 	default = true
 }
 
+# The [CONFIG] list serves as the filter.
 data "aws_subnet_ids" "default" {
 	vpc_id = data.aws_vpc.default.id
 }
@@ -48,7 +50,7 @@ data "template_file" "user-data" {
 	template = file("user-data.sh")
 
 	// Another way to define variables.
-	// These are dedicated for the usage by 'user-data.sh'.
+	// These variables are dedicated for the usage by 'user-data.sh'.
 	vars = {
 		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
 		alb_listener_port	= var.alb_listener_port // To reference another variable prefixed with 'var'.
