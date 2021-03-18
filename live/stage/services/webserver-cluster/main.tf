@@ -18,6 +18,7 @@ module "webserver-cluster" {
   # It is recommended using Git tags as version numbers due to the following reasons:
   # Branch names are not stable, as you always get the latest commit on a branch.
   # The sha1 hashes are not very human friendly.
+  # The 'ref' enables the stage and prod to use different versions.
   source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.1"
 
   cluster-name = "webservers-stage"
