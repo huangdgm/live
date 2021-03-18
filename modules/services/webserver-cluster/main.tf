@@ -49,7 +49,10 @@ data "template_file" "user-data" {
 	// Another way to define variables.
 	// These variables are dedicated for the usage by 'user-data.sh'.
 	vars = {
-		alb_dns_name = data.terraform_remote_state.webserver-cluster.outputs.alb_dns_name
+		// Note the first time you run 'terraform apply' will give you an error on 'alb_dns_name',
+		// because the state of webserver-cluster has no info regarding 'alb_dns_name.
+		// This is unlike 'db_address' or 'db_port' which were created before.
+		alb_dns_name = data.terraform_remote_state.db.outputs.address
 		alb_listener_port	= local.http_port // To reference another variable prefixed with 'var'.
 		db_address	= data.terraform_remote_state.db.outputs.address
 		db_port		= data.terraform_remote_state.db.outputs.port
