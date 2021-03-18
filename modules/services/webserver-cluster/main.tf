@@ -25,8 +25,8 @@ data "terraform_remote_state" "db" {
 	backend = "s3"
 
 	config = {
-		bucket = var.bucket
-		key = "stage/data-storage/mysql/terraform.tfstate"
+		bucket = var.db_remote_state_bucket
+		key = var.db_remote_state_key
 		region = var.region
 	}
 }
@@ -35,8 +35,8 @@ data "terraform_remote_state" "webserver-cluster" {
 	backend = "s3"
 
 	config = {
-		bucket = var.bucket
-		key = "stage/services/webserver-cluster/terraform.tfstate"
+		bucket = var.webserver_remote_state_bucket
+		key = var.webserver_remote_state_key
 		region = var.region
 	}
 }
@@ -57,7 +57,7 @@ data "template_file" "user-data" {
 
 resource "aws_launch_configuration" "example" {
 	image_id			= "ami-07a0844029df33d7d"
-	instance_type		= "t2.micro"
+	instance_type		= var.instance_type
 	security_groups		= [aws_security_group.instance.id]
 	user_data 			= data.template_file.user-data.rendered
 
@@ -73,18 +73,18 @@ resource "aws_autoscaling_group" "example" {
 	target_group_arns = [aws_lb_target_group.asg.arn]
 	health_check_type = "ELB"
 
-	min_size = 2
-	max_size = 3
+	min_size = var.min_size
+	max_size = var.max_size
 
 	tag {
 		key = "Name"
-		value = "terraform-asg-example"
+		value = "${var.cluster-name}-asg-example"
 		propagate_at_launch = true
 	}
 }
 
 resource "aws_security_group" "instance" {
-	name = "terraform-example-instance"
+	name = "${var.cluster-name}-instance"
 
 	# Allow inbound HTTP requests
 	ingress {
@@ -104,7 +104,7 @@ resource "aws_security_group" "instance" {
 }
 
 resource "aws_security_group" "alb" {
-	name = "terraform-example-alb"
+	name = "${var.cluster-name}-alb"
 
 	# Allow inbound HTTP requests
 	ingress {
@@ -124,7 +124,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_lb" "example" {
-	name = "terraform-asg-example"
+	name = "${var.cluster-name}-asg-example"
 	load_balancer_type = "application"
 	subnets = data.aws_subnet_ids.default.ids
 	security_groups = [aws_security_group.alb.id]
@@ -148,7 +148,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_target_group" "asg" {
-	name = "terraform-asg-example"
+	name = "${var.cluster-name}-asg-example"
 	port = var.alb_listener_port
 	protocol = "HTTP"
 	vpc_id = data.aws_vpc.default.id
