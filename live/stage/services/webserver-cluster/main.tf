@@ -14,6 +14,10 @@ terraform {
 
 module "webserver-cluster" {
   # Instead of using local source, it is a better practice to use versioned source.
+  # The 'ref' parameter allows you to specify a particular Git commit via its sha1 hash, a branch name, or, as in this example, a specific Git tag.
+  # It is recommended using Git tags as version numbers due to the following reasons:
+  # Branch names are not stable, as you always get the latest commit on a branch.
+  # The sha1 hashes are not very human friendly.
   source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.1"
 
   cluster-name = "webservers-stage"
