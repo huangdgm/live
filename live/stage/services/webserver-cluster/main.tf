@@ -30,4 +30,12 @@ module "webserver-cluster" {
   instance_type = "t2.micro"
   min_size = 2
   max_size = 3
+  enable_autoscaling = false
+  enable_new_user_data = true
+
+  # Custom tags to set on the instance in the ASG
+  custom_tags = {
+    Owner = "Dong"
+    DeployedBy = "Terraform"
+  }
 }

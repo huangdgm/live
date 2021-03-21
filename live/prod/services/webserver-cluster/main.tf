@@ -25,22 +25,6 @@ module "webserver-cluster" {
   instance_type = "t2.micro"
   min_size = 2
   max_size = 5
-}
-
-resource "aws_autoscaling_schedule" "scale_out_during_biz_hours" {
-  autoscaling_group_name = module.webserver-cluster.asg_name
-  scheduled_action_name = "scale-out-during-business-hours"
-  min_size = 2
-  max_size = 5
-  desired_capacity = 3
-  recurrence = "0 9 * * *"
-}
-
-resource "aws_autoscaling_schedule" "scale_in_at_night" {
-  autoscaling_group_name = module.webserver-cluster.asg_name
-  scheduled_action_name = "scale-in-at-night"
-  min_size = 2
-  max_size = 5
-  desired_capacity = 2
-  recurrence = "0 17 * * *"
+  enable_autoscaling = true
+  enable_new_user_data = false
 }
