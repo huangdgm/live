@@ -31,7 +31,7 @@ module "webserver-cluster" {
   min_size = 2
   max_size = 3
   enable_autoscaling = false
-  enable_new_user_data = true
+  enable_new_user_data = false
 
   # Custom tags to set on the instance in the ASG
   custom_tags = {
