@@ -19,7 +19,7 @@ module "webserver-cluster" {
   # Branch names are not stable, as you always get the latest commit on a branch.
   # The sha1 hashes are not very human friendly.
   # The 'ref' enables the stage and prod to use different versions.
-  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.9"
+  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.a"
 
   cluster-name = "webservers-stage"
   db_remote_state_bucket = "terraform3-up-and-running"
@@ -31,7 +31,7 @@ module "webserver-cluster" {
   min_size = 2
   max_size = 3
   enable_autoscaling = false
-  enable_new_user_data = false
+  enable_new_user_data = true
 
   # Custom tags to set on the instance in the ASG
   custom_tags = {
