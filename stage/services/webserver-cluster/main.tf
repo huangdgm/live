@@ -19,7 +19,7 @@ module "webserver-cluster" {
   # Branch names are not stable, as you always get the latest commit on a branch.
   # The sha1 hashes are not very human friendly.
   # The 'ref' enables the stage and prod to use different versions.
-  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.b"
+  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.c"
 
   ami = "ami-07a0844029df33d7d"
   server_text = "New server text"
