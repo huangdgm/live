@@ -21,6 +21,8 @@ module "webserver-cluster" {
   # The 'ref' enables the stage and prod to use different versions.
   source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.b"
 
+  ami = "ami-07a0844029df33d7d"
+  server_text = "New server text"
   cluster-name = "webservers-stage"
   db_remote_state_bucket = "terraform3-up-and-running"
   db_remote_state_key = "stage/data-storage/mysql/terraform.tfstate"
@@ -37,5 +39,6 @@ module "webserver-cluster" {
   custom_tags = {
     Owner = "Dong"
     DeployedBy = "Terraform"
+    Env = "Stage"
   }
 }

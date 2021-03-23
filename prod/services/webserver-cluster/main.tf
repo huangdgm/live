@@ -14,7 +14,7 @@ terraform {
 
 module "webserver-cluster" {
   # Instead of using local source, it is a better practice to use versioned source.
-  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.1"
+  source = "github.com/huangdgm/modules//services/webserver-cluster?ref=v0.0.b"
 
   cluster-name = "webservers-prod"
   db_remote_state_bucket = "terraform3-up-and-running"
