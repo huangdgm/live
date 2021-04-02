@@ -1,8 +1,13 @@
 provider "aws" {
   region = "us-east-2"
+
+  # Allow any 3.35.x version of the AWS provider
+  version = "~> 3.35.0"
 }
 
 terraform {
+  required_version = "=0.14.8"
+
   # Only the 'key' parameter remains in the Terraform code, since you still need to set a different 'key' value for each module.
   # All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
   backend "s3" {
@@ -19,8 +24,8 @@ module "webserver-cluster" {
   cluster-name = "webservers-prod"
   db_remote_state_bucket = "terraform3-up-and-running"
   db_remote_state_key = "prod/data-storage/mysql/terraform.tfstate"
-  webserver_remote_state_bucket = "terraform3-up-and-running"
-  webserver_remote_state_key = "prod/services/webserver-cluster/terraform.tfstate"
+  #webserver_remote_state_bucket = "terraform3-up-and-running"
+  #webserver_remote_state_key = "prod/services/webserver-cluster/terraform.tfstate"
 
   instance_type = "t2.micro"
   min_size = 2
