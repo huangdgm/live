@@ -27,6 +27,7 @@ resource "aws_db_instance" "example" {
   engine = "mysql"
   allocated_storage = 5
   name = "example_database"
+  skip_final_snapshot = true
   username = "admin"
 
   # Use a Terraform data source to read the secrets from a secret store
