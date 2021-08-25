@@ -37,4 +37,6 @@ module "webserver-cluster" {
   max_size = 5
   enable_autoscaling = true
   enable_new_user_data = false
+
+  environment = "prod"
 }

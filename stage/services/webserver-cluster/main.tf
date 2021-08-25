@@ -61,6 +61,8 @@ module "webserver-cluster" {
   enable_autoscaling = false
   enable_new_user_data = true
 
+  environment = "stage"
+
   # Custom tags to set on the instance in the ASG
   custom_tags = {
     Owner = "Dong"
