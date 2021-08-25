@@ -45,7 +45,7 @@ module "webserver-cluster" {
   # The sha1 hashes are not very human friendly.
   # The 'ref' enables the stage and prod to use different versions.
   # This source might need to be changed to reflect to the latest structure change in Git.
-  source = "github.com/huangdgm/modules//services/hello-world-app?ref=v0.0.f"
+  source = "github.com/huangdgm/modules//modules/services/hello-world-app?ref=v0.0.f"
 
   ami = "ami-07a0844029df33d7d"
   server_text = "New server text"
