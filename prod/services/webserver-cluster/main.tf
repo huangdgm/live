@@ -25,8 +25,7 @@ terraform {
 module "webserver-cluster" {
   # Instead of using local source, it is a better practice to use versioned source.
   source = "github.com/huangdgm/modules//modules/services/hello-world-app?ref=v0.0.f"
-
-  cluster-name = "webservers-prod"
+  
   db_remote_state_bucket = "terraform3-up-and-running"
   db_remote_state_key = "prod/data-storage/mysql/terraform.tfstate"
   #webserver_remote_state_bucket = "terraform3-up-and-running"
