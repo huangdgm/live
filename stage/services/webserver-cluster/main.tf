@@ -2,16 +2,31 @@ provider "aws" {
   region = "us-east-2"
 }
 
+# To deploy resources across different regions,
+# you can define multiple providers in a single tf file, and reference them in the desired resources accordingly.
+# resource "aws_instance" "example" {
+#   provider = aws.another_region
+# }
+provider "aws" {
+  alias = "another_region"
+  region = "us-east-1"
+  profile = "account2"  # To explicitly specify within which account to create the resources
+  assume_role { # To assume role so that Terraform has the permissions to create the desired resources (can be created within the same account or different account).
+    role_arn = "arn:aws:iam::xxx:role/xxx"
+    session_name = "demo"
+  }
+}
+
 terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      # Allow any 3.35.x version of the AWS provider
-      version = "~> 3.35.0"
+      # Allow any 3.33.x version of the AWS provider
+      version = "~> 3.33.0"
     }
   }
 
-  required_version = "=0.15.3"
+  required_version = "=1.0.2"
 
   # Only the 'key' parameter remains in the current Terraform configuration, since you still need to set a different 'key' value for each module.
   # All the other repeated 'backend' arguments, such as 'bucket' and 'region', into a separate file called backend.hcl.
